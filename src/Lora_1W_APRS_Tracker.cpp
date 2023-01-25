@@ -21,9 +21,9 @@ https://github.com/sh123/esp32_loraprs
 
 #define VERSION "2023.01.24"		// BETA!!!
 
-SX1268 				radio = new Module(NSS, DIO1, NRST, BUSY);
-HardwareSerial 		neo6m_gps(1);
-TinyGPSPlus 		gps;
+SX1268				radio = new Module(NSS, DIO1, NRST, BUSY);
+HardwareSerial		neo6m_gps(1);
+TinyGPSPlus			gps;
 OneButton			UserButton1 = OneButton(BUTTON1_PIN, true, true);
 
 static bool send_update = true;
@@ -33,11 +33,11 @@ void setup_lora_module() {
 	radio.setOutputPower(Lora_Power);
 	radio.setRfSwitchPins(RXEN, TXEN);
 	if (state == RADIOLIB_ERR_NONE) {
-    	Serial.println(F("LORA (1 Watt) MODULE Ready (Radiolib success!)"));
-  	} else {
-    	Serial.println(F("Lora Module Setup failed, code "));
-    	Serial.println(state);
-  	}
+		Serial.println(F("LORA (1 Watt) MODULE Ready (Radiolib success!)"));
+	} else {
+		Serial.println(F("Lora Module Setup failed, code "));
+		Serial.println(state);
+	}
 }
 
 void setup_gps_module() {
@@ -46,7 +46,7 @@ void setup_gps_module() {
 
 static void ForcedBeaconTx() {
 	Serial.println("Forced Beacon Tx");
-  	send_update = true;
+	send_update = true;
 }
 
 void setup() {
@@ -58,7 +58,7 @@ void setup() {
 	setup_gps_module();
 	UserButton1.attachClick(ForcedBeaconTx);
 	WiFi.mode(WIFI_OFF);
-  	btStop();
+	btStop();
 	Serial.print("Version = ");
 	Serial.println(VERSION);
 	Serial.println("Transmission Start ---->");
@@ -99,11 +99,11 @@ void loop() {
 	if (!send_update && gps_loc_update) {
 		uint32_t lastTx = millis() - lastTxTime;
 		currentHeading  = gps.course.deg();
-    	lastTxDistance  = TinyGPSPlus::distanceBetween(gps.location.lat(), gps.location.lng(), lastTxLatitude, lastTxLongitude);
+		lastTxDistance  = TinyGPSPlus::distanceBetween(gps.location.lat(), gps.location.lng(), lastTxLatitude, lastTxLongitude);
 		if (lastTx >= txInterval) {
 			if (lastTxDistance > MinimumDistanceTx) {
 				send_update = true;
-      		}
+			}
 		}
 		if (!send_update) {
 			double headingDelta = abs(previousHeading - currentHeading);
@@ -207,12 +207,12 @@ void loop() {
 
 	if (gps_time_update) {									// updating txInterval between Slow and FastRate or in between
 		int curr_speed = (int)gps.speed.kmph();
-      	if (curr_speed < SlowSpeed) {
-        	txInterval = SlowRate * 1000;
-      	} else if (curr_speed > FastSpeed) {
-        	txInterval = FastRate * 1000;
-      	} else {
-        	txInterval = min(SlowRate, (FastSpeed * FastRate / curr_speed)) * 1000;
-      	}
-    }
+		if (curr_speed < SlowSpeed) {
+			txInterval = SlowRate * 1000;
+		} else if (curr_speed > FastSpeed) {
+			txInterval = FastRate * 1000;
+		} else {
+			txInterval = min(SlowRate, (FastSpeed * FastRate / curr_speed)) * 1000;
+		}
+	}
 }
