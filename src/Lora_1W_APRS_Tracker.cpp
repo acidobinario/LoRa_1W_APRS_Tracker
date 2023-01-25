@@ -32,7 +32,7 @@ void setup_lora_module() {
 	int state = radio.begin(LoraFreqTx, LoraBandWidth, LoraSpreadingFactor, LoraCodingRate, LoraSyncWord, LoraOutro, LoraPreampbleLenght);
 	radio.setOutputPower(Lora_Power);
 	radio.setRfSwitchPins(RXEN, TXEN);
-    if (state == RADIOLIB_ERR_NONE) {
+	if (state == RADIOLIB_ERR_NONE) {
     	Serial.println(F("LORA (1 Watt) MODULE Ready (Radiolib success!)"));
   	} else {
     	Serial.println(F("Lora Module Setup failed, code "));

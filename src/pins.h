@@ -1,8 +1,8 @@
 #ifndef PINS_H_
 #define PINS_H_
 
-#define GPS_TXD 16      // Conection Pinout for GPS
-#define GPS_RXD 17
+#define GPS_TXD     16      // Conection Pinout for GPS
+#define GPS_RXD     17
 /*
 GPS NEO-6M v.2----> ESP32
 VCC					3.3V
@@ -11,12 +11,12 @@ TXD					16
 RXD					17
 */
 
-#define NSS 5           // Conection Pinout Ebyte E22 400M30S LoRa Module
-#define DIO1 12
-#define NRST 27
-#define BUSY 14
-#define RXEN 32
-#define TXEN 25
+#define NSS         5           // Conection Pinout Ebyte E22 400M30S LoRa Module
+#define DIO1        12
+#define NRST        27
+#define BUSY        14
+#define RXEN        32
+#define TXEN        25
 /*
 400M30S-------------------> ESP32
 1-2-3-4-5-11-12-20-22 		GND
