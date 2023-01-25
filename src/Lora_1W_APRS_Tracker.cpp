@@ -68,13 +68,13 @@ uint8_t  tx_buffer[256];
 uint32_t lastTxTime = 0;
 
 char *ax25_base91enc(char *s, uint8_t n, uint32_t v) {
-  /* Creates a Base-91 representation of the value in v in the string */
-  /* pointed to by s, n-characters long. String length should be n+1. */
-  for(s += n, *s = '\0'; n; n--) {
-    *(--s) = v % 91 + 33;
-    v /= 91;
-  }
-  return(s);
+	/* Creates a Base-91 representation of the value in v in the string */
+	/* pointed to by s, n-characters long. String length should be n+1. */
+	for(s += n, *s = '\0'; n; n--) {
+		*(--s) = v % 91 + 33;
+    	v /= 91;
+  	}
+  	return(s);
 }
 
 void loop() {
@@ -109,7 +109,7 @@ void loop() {
 			double headingDelta = abs(previousHeading - currentHeading);
 			if (lastTx > MinimumTimeDeltaBeacon * 1000) {
 				if (headingDelta > TurnDegrees && lastTxDistance > MinimumDistanceTx) {
-				send_update = true;
+					send_update = true;
 				}
 			}
 		}
