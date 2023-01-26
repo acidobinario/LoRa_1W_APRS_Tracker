@@ -96,6 +96,9 @@ void loop() {
 	static uint32_t txInterval      = 60000L;
 	//static int      speed_zero_sent = 0;
 
+
+
+	String mensaje_test = "nada";
 	if (!send_update && gps_loc_update) {
 		uint32_t lastTx = millis() - lastTxTime;
 		currentHeading  = gps.course.deg();
@@ -103,6 +106,7 @@ void loop() {
 		if (lastTx >= txInterval) {
 			if (lastTxDistance > MinimumDistanceTx) {
 				send_update = true;
+				mensaje_test = "Dist: " + String(lastTxDistance) + " Int: " + String(txInterval);
 			}
 		}
 		if (!send_update) {
@@ -110,6 +114,7 @@ void loop() {
 			if (lastTx > MinimumTimeDeltaBeacon * 1000) {
 				if (headingDelta > TurnDegrees && lastTxDistance > MinimumDistanceTx) {
 					send_update = true;
+					mensaje_test = "Delta: " + String(headingDelta) + " Dist: " + String(lastTxDistance) + " Int: " + String(txInterval);
 				}
 			}
 		}
@@ -175,7 +180,11 @@ void loop() {
 		}
 
 		if (SendComment) {
-			AprsPacketMsg += APRS_COMMENT;
+			//AprsPacketMsg += APRS_COMMENT;
+			
+			AprsPacketMsg += mensaje_test;
+
+
 		}
 
 		Serial.print(F("GPS coordinates: ")); 				// Only for Serial Monitor
