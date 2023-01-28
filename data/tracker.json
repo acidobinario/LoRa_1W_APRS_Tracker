@@ -1,0 +1,62 @@
+{
+	"beacons": [
+        {
+			"callsign": "CD2RXU-7",
+			"path": "AP",
+			"symbol": "[",
+			"overlay": "/",
+			"smart_beacon": {
+				"turn_min": 8,
+                "turn_slope":60,
+				"slow_rate": 120,
+				"slow_speed": 3,
+				"fast_rate": 60,
+				"fast_speed": 20,
+				"min_tx_dist": 50,
+				"min_bcn": 20
+			}
+		},
+		{
+			"callsign": "CD2RXU-8",
+			"path": "AP",
+			"symbol": "b",
+			"overlay": "/",
+			"smart_beacon": {
+				"turn_min": 12,
+                "turn_slope":80,
+				"slow_rate": 180,
+				"slow_speed": 5,
+				"fast_rate": 60,
+				"fast_speed": 40,
+				"min_tx_dist": 70,
+				"min_bcn": 12
+			}
+		},
+		{
+			"callsign": "CD2RXU-9",
+			"path": "AP",
+			"symbol": ">",
+			"overlay": "/",
+			"smart_beacon": {
+				"active": true,
+				"turn_min": 15,
+                "turn_slope":80,
+				"slow_rate": 120,
+				"slow_speed": 10,
+				"fast_rate": 60,
+				"fast_speed": 70,
+				"min_tx_dist": 100,
+				"min_bcn": 10
+			}
+		}
+
+	],
+    "lora": {
+        "frequency_rx": 433775000,
+        "frequency_tx": 433775000,
+        "power": 20,
+        "spreading_factor": 12,
+        "signal_bandwidth": 125000,
+        "coding_rate4": 5
+    }
+}

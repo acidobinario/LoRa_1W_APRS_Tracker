@@ -14,19 +14,37 @@ https://github.com/sh123/esp32_loraprs
 #include <RadioLib.h>
 #include <WiFi.h>
 #include <OneButton.h>
-#include "user_config.h"
+#include "BeaconManager.h"
 #include "pins.h"
 #include "lora_config.h"
 #include "beacon_config.h"
+#include "configuration.h"
 
-#define VERSION "2023.01.24"		// BETA!!!
+#define VERSION "2023.01.28"		// BETA still!!!
 
 SX1268				radio = new Module(NSS, DIO1, NRST, BUSY);
 HardwareSerial		neo6m_gps(1);
 TinyGPSPlus			gps;
 OneButton			UserButton1 = OneButton(BUTTON1_PIN, true, true);
+Configuration 		Config;
+BeaconManager 		BeaconMan;
 
 static bool send_update = true;
+
+void load_config() {
+  ConfigurationManagement confmg("/tracker.json");
+  Config = confmg.readConfiguration();
+  BeaconMan.loadConfig(Config.beacons);
+  if (BeaconMan.getCurrentBeaconConfig()->callsign == "NOCALL-10") {
+	Serial.println("You have to change your settings in 'data/tracker.json' and "
+                "upload it via \"Upload File System image\"!");
+    while (true) {
+    }
+  } else {
+	Serial.println("#####   (Configuration Loaded)   #####");
+  }
+}
+
 
 void setup_lora_module() {
 	int state = radio.begin(LoraFreqTx, LoraBandWidth, LoraSpreadingFactor, LoraCodingRate, LoraSyncWord, LoraOutro, LoraPreampbleLenght);
@@ -49,18 +67,26 @@ static void ForcedBeaconTx() {
 	send_update = true;
 }
 
+static void HandleNextBeacon() {
+  BeaconMan.loadNextBeacon();
+  Serial.print("Changing CALLSIGN --> ");
+  Serial.println(BeaconMan.getCurrentBeaconConfig()->callsign);
+}
+
 void setup() {
 	Serial.begin(115200);
-	Serial.println(F("LoRa tracker " __DATE__ " " __TIME__ "  /  Callsign ------> " SRC_CALLSIGN));
 	pinMode(LED_BUILTIN, OUTPUT);
 	digitalWrite(LED_BUILTIN, LOW);
+	load_config();
+	Serial.print("LoRa tracker " __DATE__ " " __TIME__ " / Callsign ------> ");
+	Serial.println(BeaconMan.getCurrentBeaconConfig()->callsign);
 	setup_lora_module();
 	setup_gps_module();
 	UserButton1.attachClick(ForcedBeaconTx);
+	UserButton1.attachLongPressStart(HandleNextBeacon);
 	WiFi.mode(WIFI_OFF);
 	btStop();
-	Serial.print("Version = ");
-	Serial.println(VERSION);
+	Serial.print("(Version = "); Serial.print(VERSION);	Serial.println(")");
 	Serial.println("Transmission Start ---->");
 }
 
@@ -104,15 +130,15 @@ void loop() {
 		currentHeading  = gps.course.deg();
 		lastTxDistance  = TinyGPSPlus::distanceBetween(gps.location.lat(), gps.location.lng(), lastTxLatitude, lastTxLongitude);
 		if (lastTx >= txInterval) {
-			if (lastTxDistance > MinimumDistanceTx) {
+			if (lastTxDistance > BeaconMan.getCurrentBeaconConfig()->smart_beacon.min_tx_dist) {
 				send_update = true;
 				mensaje_test = "Dist: " + String(lastTxDistance) + " Int: " + String(txInterval);
 			}
 		}
 		if (!send_update) {
 			double headingDelta = abs(previousHeading - currentHeading);
-			if (lastTx > MinimumTimeDeltaBeacon * 1000) {
-				if (headingDelta > TurnDegrees && lastTxDistance > MinimumDistanceTx) {
+			if (lastTx > BeaconMan.getCurrentBeaconConfig()->smart_beacon.min_bcn * 1000) {
+				if (headingDelta > BeaconMan.getCurrentBeaconConfig()->smart_beacon.turn_min && lastTxDistance > BeaconMan.getCurrentBeaconConfig()->smart_beacon.min_tx_dist) {
 					send_update = true;
 					mensaje_test = "Delta: " + String(headingDelta) + " Dist: " + String(lastTxDistance) + " Int: " + String(txInterval);
 				}
@@ -142,7 +168,7 @@ void loop() {
 		if(Tlon < 0) { Tlon= -Tlon; }
 
 		String AprsPacketMsg = "!";
-		AprsPacketMsg += "/";	
+		AprsPacketMsg += BeaconMan.getCurrentBeaconConfig()->overlay;	
 		char helper_base91[] = {"0000\0"};
 		int i;
 		ax25_base91enc(helper_base91, 4, aprs_lat);
@@ -154,7 +180,7 @@ void loop() {
 			AprsPacketMsg += helper_base91[i];
 		}
 
-		AprsPacketMsg += SYMBOL;
+		AprsPacketMsg += BeaconMan.getCurrentBeaconConfig()->symbol;
 
 		if (SendAltitude) {					// Send Altitude or... (APRS calculates Speed also)
 			int Alt1, Alt2;
@@ -180,7 +206,7 @@ void loop() {
 		}
 
 		if (SendComment) {
-			//AprsPacketMsg += APRS_COMMENT;
+			//AprsPacketMsg += "Lora Tracker 1W";
 			
 			AprsPacketMsg += mensaje_test;
 
@@ -195,7 +221,7 @@ void loop() {
 		memset(tx_buffer, 0x00, sizeof tx_buffer);
 		uint16_t size = 0;
 
-		size = snprintf(reinterpret_cast<char *>(tx_buffer), sizeof tx_buffer, "\x3c\xff\x01%s>%s:%s", SRC_CALLSIGN, DST_CALLSIGN, AprsPacketMsg.c_str());
+		size = snprintf(reinterpret_cast<char *>(tx_buffer), sizeof tx_buffer, "\x3c\xff\x01%s>%s:%s", BeaconMan.getCurrentBeaconConfig()->callsign, BeaconMan.getCurrentBeaconConfig()->path, AprsPacketMsg.c_str());
 
 		Serial.print(millis()); 							// Only for Serial Monitor
 		Serial.print(F(" transmitting: ")); 
@@ -214,14 +240,14 @@ void loop() {
 		send_update = false;
 	}
 
-	if (gps_time_update) {									// updating txInterval between Slow and FastRate or in between
+	if (gps_time_update) {									// updating txInterval between Slow and FastRate or "in-between"
 		int curr_speed = (int)gps.speed.kmph();
-		if (curr_speed < SlowSpeed) {
-			txInterval = SlowRate * 1000;
-		} else if (curr_speed > FastSpeed) {
-			txInterval = FastRate * 1000;
+		if (curr_speed < BeaconMan.getCurrentBeaconConfig()->smart_beacon.slow_speed) {
+			txInterval = BeaconMan.getCurrentBeaconConfig()->smart_beacon.slow_rate * 1000;
+		} else if (curr_speed > BeaconMan.getCurrentBeaconConfig()->smart_beacon.fast_speed) {
+			txInterval = BeaconMan.getCurrentBeaconConfig()->smart_beacon.fast_rate * 1000;
 		} else {
-			txInterval = min(SlowRate, (FastSpeed * FastRate / curr_speed)) * 1000;
+			txInterval = min(BeaconMan.getCurrentBeaconConfig()->smart_beacon.slow_rate, (BeaconMan.getCurrentBeaconConfig()->smart_beacon.fast_speed * BeaconMan.getCurrentBeaconConfig()->smart_beacon.fast_rate / curr_speed)) * 1000;
 		}
 	}
 }

@@ -7,6 +7,22 @@ This LORA APRS Tracker will work with very cheep hardware (amazon, ebay or aliex
 
 This project uses Enconded APRS GPS packet to extends range by saving bytes (increased battery life, higher chances of good packet reception (increased range), lower probability of packet collisions (more channel capacity) and 1 Watt LoRa Module (over the usual 0.1 Watt in commercial boards like the LILYGO T-Beam V.1).
 
+Achievements:
+
+- configurations saved on ESP32 memory (SPIFFS).
+- changing CALLSINGs with the "long" push of a button.
+- custom smartbeacon values for each CALLSIGN
+- force Tx with the "short" push of a button.
+- send enconded GPS data for shorter and realiable comunication.
+
+To add (shortly) working on it
+- turn_slope for course angle smartbeacon
+- oled screen (allready bought ... and waiting..  )
+- SendAltitude: encoded instead of just "Course+Speed" without adding lenght to the APRS packet.
+- SendComment: for a GPS position or distance to certain GPS point
+- Send Status: for a GPS position or distance to certain GPS point
+- Send Message to anothe APRS capable Radio/Handy/tracker/iGate or even Twitter ;)
+- Battery Monitoring (voltage, consumption, low_battery warning, charging?)
 
 
 
@@ -20,14 +36,10 @@ This Repository is based on lots of other Lora APRS Tracker ideas like:
 
 
 
-things to do:
+things to do (also):
 - add wiki 
-- add status update (on the works)
-- add message to another APRS capable Radio (on the works)
 - add translation to Spanish (and German?)
-- add OLED Screen (allready Bought)
 - add schematic for the wiring
 - add info of 5V DC stepup and charging battery
-- add battery monitoring + charging
 - add photos of prototipe
 - add PCB (with eagle and gerber)
