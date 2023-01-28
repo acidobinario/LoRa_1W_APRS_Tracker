@@ -14,8 +14,7 @@ https://github.com/sh123/esp32_loraprs
 #include <RadioLib.h>
 #include <WiFi.h>
 #include <OneButton.h>
-#include "user_config.h"
-#include "pins.h"
+#include "pins_config.h"
 #include "lora_config.h"
 #include "beacon_config.h"
 
@@ -26,7 +25,22 @@ HardwareSerial		neo6m_gps(1);
 TinyGPSPlus			gps;
 OneButton			UserButton1 = OneButton(BUTTON1_PIN, true, true);
 
+
+String CurrentUser[10];
 static bool send_update = true;
+
+String CALLSIGN_CONFIG_1[10] = {User1_Callsign,User1_Symbol,String(User1_SlowRate),String(User1_SlowSpeed),
+								String(User1_FastRate),String(User1_FastSpeed),String(User1_MinDistTx),
+								String(User1_MinDeltaBcn),String(User1_TurnMin),String(User1_TurnSlope)};
+
+String CALLSIGN_CONFIG_2[10] = {User2_Callsign,User2_Symbol,String(User2_SlowRate),String(User2_SlowSpeed),
+								String(User2_FastRate),String(User2_FastSpeed),String(User2_MinDistTx),
+								String(User2_MinDeltaBcn),String(User2_TurnMin),String(User2_TurnSlope)};
+
+String CALLSIGN_CONFIG_3[10] = {User3_Callsign,User3_Symbol,String(User3_SlowRate),String(User3_SlowSpeed),
+								String(User3_FastRate),String(User3_FastSpeed),String(User3_MinDistTx),
+								String(User3_MinDeltaBcn),String(User3_TurnMin),String(User3_TurnSlope)};
+
 
 void setup_lora_module() {
 	int state = radio.begin(LoraFreqTx, LoraBandWidth, LoraSpreadingFactor, LoraCodingRate, LoraSyncWord, LoraOutro, LoraPreampbleLenght);
@@ -44,24 +58,58 @@ void setup_gps_module() {
 	neo6m_gps.begin(9600, SERIAL_8N1, GPS_TXD, GPS_RXD);
 }
 
+void setup_first_user() {
+	for (int i = 0; i<10; i++ ) {
+		CurrentUser[i] = CALLSIGN_CONFIG_1[i];
+	}
+	Serial.print("Current User --> ");
+	Serial.println(CurrentUser[0]);
+}
+
 static void ForcedBeaconTx() {
 	Serial.println("Forced Beacon Tx");
 	send_update = true;
 }
 
+static void HandleNextBeacon() {
+	if (CurrentUser[0] == CALLSIGN_CONFIG_1[0]){
+		Serial.print("Changing CALLSIGN to --> ");
+		Serial.println(CALLSIGN_CONFIG_2[0]);
+		for (int i = 0; i<10; i++ ) {
+			CurrentUser[i] = CALLSIGN_CONFIG_2[i];
+		}
+	} else if (CurrentUser[0] == CALLSIGN_CONFIG_2[0]){
+		Serial.print("Changing CALLSIGN to --> ");
+		Serial.println(CALLSIGN_CONFIG_3[0]);
+		for (int i = 0; i<10; i++ ) {
+			CurrentUser[i] = CALLSIGN_CONFIG_3[i];
+		}
+	} else if (CurrentUser[0] == CALLSIGN_CONFIG_3[0]){
+		Serial.print("Changing CALLSIGN to --> ");
+		Serial.println(CALLSIGN_CONFIG_1[0]);
+		for (int i = 0; i<10; i++ ) {
+			CurrentUser[i] = CALLSIGN_CONFIG_1[i];
+		}
+	}
+}
+
 void setup() {
 	Serial.begin(115200);
-	Serial.println(F("LoRa tracker " __DATE__ " " __TIME__ "  /  Callsign ------> " SRC_CALLSIGN));
 	pinMode(LED_BUILTIN, OUTPUT);
 	digitalWrite(LED_BUILTIN, LOW);
-	setup_lora_module();
-	setup_gps_module();
-	UserButton1.attachClick(ForcedBeaconTx);
 	WiFi.mode(WIFI_OFF);
 	btStop();
-	Serial.print("Version = ");
+	UserButton1.attachClick(ForcedBeaconTx);
+	UserButton1.attachLongPressStart(HandleNextBeacon);
+	Serial.println("");
+	Serial.println("****** LoRa APRS Tracker ******");
+	Serial.println("https://github.com/richonguzman/LoRa_1W_APRS_Tracker");
+	Serial.print("Version -------> ");
 	Serial.println(VERSION);
-	Serial.println("Transmission Start ---->");
+	setup_first_user();
+	setup_lora_module();
+	setup_gps_module();
+	Serial.println("---Transmission Start ---");
 }
 
 uint8_t  tx_buffer[256];
@@ -97,9 +145,14 @@ void loop() {
 	//static int      speed_zero_sent = 0;
 
 	if (!send_update && gps_loc_update) {
-		uint32_t lastTx = millis() - lastTxTime;
-		currentHeading  = gps.course.deg();
-		lastTxDistance  = TinyGPSPlus::distanceBetween(gps.location.lat(), gps.location.lng(), lastTxLatitude, lastTxLongitude);
+		uint32_t lastTx 			= millis() - lastTxTime;
+		int MinimumDistanceTx 		= CurrentUser[6].toInt();
+		int MinimumTimeDeltaBeacon	= CurrentUser[7].toInt();
+		int TurnDegrees				= CurrentUser[8].toInt();
+		int TurnSlope				= CurrentUser[9].toInt();
+		currentHeading  			= gps.course.deg();
+		lastTxDistance  			= TinyGPSPlus::distanceBetween(gps.location.lat(), gps.location.lng(), lastTxLatitude, lastTxLongitude);
+		
 		if (lastTx >= txInterval) {
 			if (lastTxDistance > MinimumDistanceTx) {
 				send_update = true;
@@ -137,7 +190,7 @@ void loop() {
 		if(Tlon < 0) { Tlon= -Tlon; }
 
 		String AprsPacketMsg = "!";
-		AprsPacketMsg += "/";	
+		AprsPacketMsg += AprsOverlay;	
 		char helper_base91[] = {"0000\0"};
 		int i;
 		ax25_base91enc(helper_base91, 4, aprs_lat);
@@ -149,7 +202,7 @@ void loop() {
 			AprsPacketMsg += helper_base91[i];
 		}
 
-		AprsPacketMsg += SYMBOL;
+		AprsPacketMsg += CurrentUser[1];	// Symbol
 
 		if (SendAltitude) {					// Send Altitude or... (APRS calculates Speed also)
 			int Alt1, Alt2;
@@ -186,7 +239,7 @@ void loop() {
 		memset(tx_buffer, 0x00, sizeof tx_buffer);
 		uint16_t size = 0;
 
-		size = snprintf(reinterpret_cast<char *>(tx_buffer), sizeof tx_buffer, "\x3c\xff\x01%s>%s:%s", SRC_CALLSIGN, DST_CALLSIGN, AprsPacketMsg.c_str());
+		size = snprintf(reinterpret_cast<char *>(tx_buffer), sizeof tx_buffer, "\x3c\xff\x01%s>%s:%s", CurrentUser[0], AprsPath, AprsPacketMsg.c_str());
 
 		Serial.print(millis()); 							// Only for Serial Monitor
 		Serial.print(F(" transmitting: ")); 
@@ -206,6 +259,11 @@ void loop() {
 	}
 
 	if (gps_time_update) {									// updating txInterval between Slow and FastRate or in between
+		int SlowRate 		= CurrentUser[2].toInt();
+		int SlowSpeed 		= CurrentUser[3].toInt();
+		int FastRate 		= CurrentUser[4].toInt();
+		int FastSpeed 		= CurrentUser[5].toInt();
+
 		int curr_speed = (int)gps.speed.kmph();
 		if (curr_speed < SlowSpeed) {
 			txInterval = SlowRate * 1000;

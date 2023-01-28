@@ -15,7 +15,10 @@ Achievements:
 - custom smartbeacon values for each CALLSIGN
 - force Tx with the "short" push of a button.
 - send enconded GPS data packet for shorter and realiable comunication.
-- To add (shortly) working on it
+- Select to send "Course + Speed" or "Altitude + Speed" in encoded APRS data packet
+
+
+To add (shortly) working on it
 
 - turn_slope for course angle smartbeacon
 - oled screen (allready bought ... and waiting.. )
