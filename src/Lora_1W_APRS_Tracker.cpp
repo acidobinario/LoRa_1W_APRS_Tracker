@@ -19,7 +19,7 @@ https://github.com/sh123/esp32_loraprs
 #include "lora_config.h"
 #include "beacon_config.h"
 
-#define VERSION "2023.01.24"		// BETA!!!
+#define VERSION "2023.01.28"		// BETA!!!
 
 SX1268				radio = new Module(NSS, DIO1, NRST, BUSY);
 HardwareSerial		neo6m_gps(1);
