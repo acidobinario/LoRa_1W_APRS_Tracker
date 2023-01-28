@@ -10,7 +10,7 @@
 //#define MinimumTimeDeltaBeacon  5           // Seg between Tx
 
 #define SendAltitude            true        // "true" adds Altitude to the APRS packet/message, "false" add Course+Speed
-#define SendComment             false       // "true" adds comment to the APRS packet/message
+#define SendComment             true       // "true" adds comment to the APRS packet/message
 
 #define APRS_COMMENT    "Lora Tracker 1W"       // if you want to send any comment change the APRS_COMMENT 
                                                 // and also beacon_config.h > SendComment = true
@@ -24,7 +24,7 @@
 #define User1_SlowSpeed         3
 #define User1_FastRate          60
 #define User1_FastSpeed         20
-#define User1_MinDistTx         50
+#define User1_MinDistTx         5           // debe ser 50 pero esta 5 por pruebas 
 #define User1_MinDeltaBcn       20
 #define User1_TurnMin           8
 #define User1_TurnSlope         60
