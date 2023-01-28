@@ -7,7 +7,7 @@
 			"overlay": "/",
 			"smart_beacon": {
 				"turn_min": 8,
-                "turn_slope":60,
+				"turn_slope":60,
 				"slow_rate": 120,
 				"slow_speed": 3,
 				"fast_rate": 60,
@@ -23,7 +23,7 @@
 			"overlay": "/",
 			"smart_beacon": {
 				"turn_min": 12,
-                "turn_slope":80,
+				"turn_slope":80,
 				"slow_rate": 180,
 				"slow_speed": 5,
 				"fast_rate": 60,
@@ -40,7 +40,7 @@
 			"smart_beacon": {
 				"active": true,
 				"turn_min": 15,
-                "turn_slope":80,
+				"turn_slope":80,
 				"slow_rate": 120,
 				"slow_speed": 10,
 				"fast_rate": 60,
