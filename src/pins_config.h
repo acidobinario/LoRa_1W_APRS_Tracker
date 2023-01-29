@@ -1,5 +1,5 @@
-#ifndef PINS_H_
-#define PINS_H_
+#ifndef PINS_CONFIG_H_
+#define PINS_CONFIG_H_
 
 #define GPS_TXD     16      // Conection Pinout for GPS
 #define GPS_RXD     17

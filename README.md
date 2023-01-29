@@ -8,6 +8,15 @@ This LORA APRS Tracker will work with very cheep hardware (amazon, ebay or aliex
 This project uses Enconded APRS GPS packet to extends range by saving bytes (increased battery life, higher chances of good packet reception (increased range), lower probability of packet collisions (more channel capacity) and 1 Watt LoRa Module (over the usual 0.1 Watt in commercial boards like the LILYGO T-Beam V.1).
 
 Achievements:
+______________________________________________________________________
+
+Achievements:
+
+- changing CALLSINGs with the "long" push of a button.
+- custom smartbeacon values for each CALLSIGN
+- force Tx with the "short" push of a button.
+- send enconded GPS data packet for shorter and realiable comunication.
+- Select to send "Course + Speed" or "Altitude + Speed" in encoded APRS data packet
 
 - configurations saved on ESP32 memory (SPIFFS).
 - changing CALLSINGs with the "long" push of a button.
@@ -23,18 +32,24 @@ To add (shortly) working on it
 - Send Status: for a GPS position or distance to certain GPS point
 - Send Message to anothe APRS capable Radio/Handy/tracker/iGate or even Twitter ;)
 - Battery Monitoring (voltage, consumption, low_battery warning, charging?)
+To add (shortly) working on it
 
+- turn_slope for course angle smartbeacon
+- oled screen (allready bought ... and waiting.. )
+- SendAltitude: encoded instead of just "Course+Speed" without adding lenght to the APRS packet.
+- SendComment: for a GPS position or distance to certain GPS point
+- Send Status: for a GPS position or distance to certain GPS point
+- Send Message to anothe APRS capable Radio/Handy/tracker/iGate or even Twitter ;)
+- Battery Monitoring (voltage, consumption, low_battery warning, charging?)
 
-
+______________________________________________________________________
 This Repository is based on lots of other Lora APRS Tracker ideas like:
 
 - https://github.com/lora-aprs/LoRa_APRS_Tracker      (the start with LILYGO T-BEAM v.1)
 - https://github.com/aprs434/lora.tracker             (the great encoding position modification)
 - https://github.com/Mane76/lora.tracker              (great ideas about changing callsign and other mods)
 - https://github.com/sh123/esp32_loraprs              (inspiration for accesing the Lora Module with Radiolib library)
-
-
-
+______________________________________________________________________
 
 things to do (also):
 - add wiki 
