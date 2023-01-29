@@ -17,7 +17,6 @@ https://github.com/sh123/esp32_loraprs
 #include "pins_config.h"
 #include "lora_config.h"
 #include "beacon_config.h"
-#include "configuration.h"
 
 #define VERSION "2023.01.28"		// BETA!!!
 
