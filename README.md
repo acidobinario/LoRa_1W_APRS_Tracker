@@ -7,7 +7,6 @@ This LORA APRS Tracker will work with very cheep hardware (amazon, ebay or aliex
 
 This project uses Enconded APRS GPS packet to extends range by saving bytes (increased battery life, higher chances of good packet reception (increased range), lower probability of packet collisions (more channel capacity) and 1 Watt LoRa Module (over the usual 0.1 Watt in commercial boards like the LILYGO T-Beam V.1).
 
-Achievements:
 ______________________________________________________________________
 
 Achievements:
@@ -25,6 +24,7 @@ Achievements:
 - send enconded GPS data packet for shorter and realiable comunication.
 
 To add (shortly) working on it
+
 - turn_slope for course angle smartbeacon
 - oled screen (allready bought ... and waiting..  )
 - SendAltitude: encoded instead of just "Course+Speed" without adding lenght to the APRS packet.

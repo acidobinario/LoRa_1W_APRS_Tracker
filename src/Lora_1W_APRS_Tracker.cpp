@@ -18,13 +18,12 @@ https://github.com/sh123/esp32_loraprs
 #include "lora_config.h"
 #include "beacon_config.h"
 
-#define VERSION "2023.01.28"		// BETA!!!
+#define VERSION "2023.01.28-2"		// BETA!!!
 
 SX1268				radio = new Module(NSS, DIO1, NRST, BUSY);
 HardwareSerial		neo6m_gps(1);
 TinyGPSPlus			gps;
 OneButton			UserButton1 = OneButton(BUTTON1_PIN, true, true);
-
 
 String CurrentUser[10];
 static bool send_update = true;
