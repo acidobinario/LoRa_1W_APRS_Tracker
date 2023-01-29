@@ -17,25 +17,10 @@ Achievements:
 - send enconded GPS data packet for shorter and realiable comunication.
 - Select to send "Course + Speed" or "Altitude + Speed" in encoded APRS data packet
 
-- configurations saved on ESP32 memory (SPIFFS).
-- changing CALLSINGs with the "long" push of a button.
-- custom smartbeacon values for each CALLSIGN
-- force Tx with the "short" push of a button.
-- send enconded GPS data packet for shorter and realiable comunication.
-
 To add (shortly) working on it
 
 - turn_slope for course angle smartbeacon
 - oled screen (allready bought ... and waiting..  )
-- SendAltitude: encoded instead of just "Course+Speed" without adding lenght to the APRS packet.
-- SendComment: for a GPS position or distance to certain GPS point
-- Send Status: for a GPS position or distance to certain GPS point
-- Send Message to anothe APRS capable Radio/Handy/tracker/iGate or even Twitter ;)
-- Battery Monitoring (voltage, consumption, low_battery warning, charging?)
-To add (shortly) working on it
-
-- turn_slope for course angle smartbeacon
-- oled screen (allready bought ... and waiting.. )
 - SendAltitude: encoded instead of just "Course+Speed" without adding lenght to the APRS packet.
 - SendComment: for a GPS position or distance to certain GPS point
 - Send Status: for a GPS position or distance to certain GPS point
