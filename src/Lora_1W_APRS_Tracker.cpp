@@ -18,7 +18,7 @@ https://github.com/sh123/esp32_loraprs
 #include "lora_config.h"
 #include "beacon_config.h"
 
-#define VERSION "2023.01.28-2"		// BETA!!!
+#define VERSION "2023.01.29-1"		// BETA!!!
 
 SX1268				radio = new Module(NSS, DIO1, NRST, BUSY);
 HardwareSerial		neo6m_gps(1);
@@ -58,8 +58,18 @@ void setup_gps_module() {
 }
 
 void setup_first_user() {
-	for (int i = 0; i<10; i++ ) {
-		CurrentUser[i] = CALLSIGN_CONFIG_1[i];
+	if (FirstUser == 1) {
+		for (int i = 0; i<10; i++) {
+			CurrentUser[i] = CALLSIGN_CONFIG_1[i];
+		}
+	} else if (FirstUser == 2) {
+		for (int i = 0; i<10; i++) {
+			CurrentUser[i] = CALLSIGN_CONFIG_2[i];
+		}
+	} else if (FirstUser == 3) {
+		for (int i = 0; i<10; i++) {
+			CurrentUser[i] = CALLSIGN_CONFIG_3[i];
+		}
 	}
 	Serial.print("Current User --> ");
 	Serial.println(CurrentUser[0]);
@@ -71,22 +81,20 @@ static void ForcedBeaconTx() {
 }
 
 static void HandleNextBeacon() {
-	if (CurrentUser[0] == CALLSIGN_CONFIG_1[0]){
-		Serial.print("Changing CALLSIGN to --> ");
+	Serial.print("Changing CALLSIGN to --> ");
+	if (CurrentUser[0] == CALLSIGN_CONFIG_1[0]) {
 		Serial.println(CALLSIGN_CONFIG_2[0]);
-		for (int i = 0; i<10; i++ ) {
+		for (int i = 0; i<10; i++) {
 			CurrentUser[i] = CALLSIGN_CONFIG_2[i];
 		}
-	} else if (CurrentUser[0] == CALLSIGN_CONFIG_2[0]){
-		Serial.print("Changing CALLSIGN to --> ");
+	} else if (CurrentUser[0] == CALLSIGN_CONFIG_2[0]) {
 		Serial.println(CALLSIGN_CONFIG_3[0]);
-		for (int i = 0; i<10; i++ ) {
+		for (int i = 0; i<10; i++) {
 			CurrentUser[i] = CALLSIGN_CONFIG_3[i];
 		}
-	} else if (CurrentUser[0] == CALLSIGN_CONFIG_3[0]){
-		Serial.print("Changing CALLSIGN to --> ");
+	} else if (CurrentUser[0] == CALLSIGN_CONFIG_3[0]) {
 		Serial.println(CALLSIGN_CONFIG_1[0]);
-		for (int i = 0; i<10; i++ ) {
+		for (int i = 0; i<10; i++) {
 			CurrentUser[i] = CALLSIGN_CONFIG_1[i];
 		}
 	}
