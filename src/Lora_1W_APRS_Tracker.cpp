@@ -152,7 +152,8 @@ void loop() {
 		int MinimumDistanceTx 		= CurrentUser[6].toInt();
 		int MinimumTimeDeltaBeacon	= CurrentUser[7].toInt();
 		int TurnMinDegrees			= CurrentUser[8].toInt();
-		int TurnSlope				= CurrentUser[9].toInt();			
+		int TurnSlope				= CurrentUser[9].toInt();
+		int TurnMinAngle;			
 		currentHeading  			= gps.course.deg();
 		lastTxDistance  			= TinyGPSPlus::distanceBetween(gps.location.lat(), gps.location.lng(), lastTxLatitude, lastTxLongitude);
 		
@@ -165,7 +166,11 @@ void loop() {
 		if (!send_update) {
 			double headingDelta = abs(previousHeading - currentHeading);
 			if (lastTx > MinimumTimeDeltaBeacon * 1000) {
-				int TurnMinAngle = TurnMinDegrees + (TurnSlope/CurrentSpeed);
+				if (CurrentSpeed == 0) {
+					TurnMinAngle = TurnMinDegrees + (TurnSlope/(CurrentSpeed + 1));
+				} else {
+					TurnMinAngle = TurnMinDegrees + (TurnSlope/CurrentSpeed);
+				}
 				if (headingDelta > TurnMinAngle && lastTxDistance > MinimumDistanceTx) {
 					send_update = true;
 					mensaje_test = "C:" + String(headingDelta) + " D:" + String(lastTxDistance) + " I:" + String(txInterval);
