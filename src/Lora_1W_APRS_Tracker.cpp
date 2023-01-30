@@ -1,13 +1,6 @@
-/*
-LORA (1 Watt Module) APRS Tracker
+/******   LORA (1 Watt Module) APRS Tracker   ******
 https://github.com/richonguzman/LoRa_1W_APRS_Tracker
-written by Ricardo Guzman ( CD2RXU-7 )
-based on lots of other Lora APRS Tracker ideas like:
-https://github.com/lora-aprs/LoRa_APRS_Tracker
-https://github.com/aprs434/lora.tracker
-https://github.com/Mane76/lora.tracker
-https://github.com/sh123/esp32_loraprs
-*/
+		written by Ricardo Guzman ( CD2RXU-7 )      */
 
 #include <SPI.h>
 #include <TinyGPS++.h>
@@ -30,15 +23,15 @@ static bool send_update = true;
 
 String CALLSIGN_CONFIG_1[10] = {User1_Callsign,User1_Symbol,String(User1_SlowRate),String(User1_SlowSpeed),
 								String(User1_FastRate),String(User1_FastSpeed),String(User1_MinDistTx),
-								String(User1_MinDeltaBcn),String(User1_TurnMin),String(User1_TurnSlope)};
+								String(User1_MinDeltaBcn),String(User1_TurnMinDeg),String(User1_TurnSlope)};
 
 String CALLSIGN_CONFIG_2[10] = {User2_Callsign,User2_Symbol,String(User2_SlowRate),String(User2_SlowSpeed),
 								String(User2_FastRate),String(User2_FastSpeed),String(User2_MinDistTx),
-								String(User2_MinDeltaBcn),String(User2_TurnMin),String(User2_TurnSlope)};
+								String(User2_MinDeltaBcn),String(User2_TurnMinDeg),String(User2_TurnSlope)};
 
 String CALLSIGN_CONFIG_3[10] = {User3_Callsign,User3_Symbol,String(User3_SlowRate),String(User3_SlowSpeed),
 								String(User3_FastRate),String(User3_FastSpeed),String(User3_MinDistTx),
-								String(User3_MinDeltaBcn),String(User3_TurnMin),String(User3_TurnSlope)};
+								String(User3_MinDeltaBcn),String(User3_TurnMinDeg),String(User3_TurnSlope)};
 
 
 void setup_lora_module() {
@@ -149,6 +142,7 @@ void loop() {
 	static double   lastTxLongitude = 0.0;
 	static double   lastTxDistance  = 0.0;
 	static uint32_t txInterval      = 60000L;
+	int CurrentSpeed 				= (int)gps.speed.kmph();
 	//static int      speed_zero_sent = 0;
 
 
@@ -157,8 +151,8 @@ void loop() {
 		uint32_t lastTx 			= millis() - lastTxTime;
 		int MinimumDistanceTx 		= CurrentUser[6].toInt();
 		int MinimumTimeDeltaBeacon	= CurrentUser[7].toInt();
-		int TurnDegrees				= CurrentUser[8].toInt();
-		int TurnSlope				= CurrentUser[9].toInt();
+		int TurnMinDegrees			= CurrentUser[8].toInt();
+		int TurnSlope				= CurrentUser[9].toInt();			
 		currentHeading  			= gps.course.deg();
 		lastTxDistance  			= TinyGPSPlus::distanceBetween(gps.location.lat(), gps.location.lng(), lastTxLatitude, lastTxLongitude);
 		
@@ -171,7 +165,8 @@ void loop() {
 		if (!send_update) {
 			double headingDelta = abs(previousHeading - currentHeading);
 			if (lastTx > MinimumTimeDeltaBeacon * 1000) {
-				if (headingDelta > TurnDegrees && lastTxDistance > MinimumDistanceTx) {
+				int TurnMinAngle = TurnMinDegrees + (TurnSlope/CurrentSpeed);
+				if (headingDelta > TurnMinAngle && lastTxDistance > MinimumDistanceTx) {
 					send_update = true;
 					mensaje_test = "C:" + String(headingDelta) + " D:" + String(lastTxDistance) + " I:" + String(txInterval);
 				}
@@ -274,15 +269,13 @@ void loop() {
 		int SlowRate 		= CurrentUser[2].toInt();
 		int SlowSpeed 		= CurrentUser[3].toInt();
 		int FastRate 		= CurrentUser[4].toInt();
-		int FastSpeed 		= CurrentUser[5].toInt();
-
-		int curr_speed = (int)gps.speed.kmph();
-		if (curr_speed < SlowSpeed) {
+		int FastSpeed 		= CurrentUser[5].toInt();		
+		if (CurrentSpeed < SlowSpeed) {
 			txInterval = SlowRate * 1000;
-		} else if (curr_speed > FastSpeed) {
+		} else if (CurrentSpeed > FastSpeed) {
 			txInterval = FastRate * 1000;
 		} else {
-			txInterval = min(SlowRate, (FastSpeed * FastRate / curr_speed)) * 1000;
+			txInterval = min(SlowRate, (FastSpeed * FastRate / CurrentSpeed)) * 1000;
 		}
 	}
 }

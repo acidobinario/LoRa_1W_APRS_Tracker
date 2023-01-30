@@ -16,8 +16,8 @@
 #define User1_FastSpeed         15
 #define User1_MinDistTx         5           // debe ser 50 pero esta 5 por pruebas 
 #define User1_MinDeltaBcn       20
-#define User1_TurnMin           8
-#define User1_TurnSlope         50
+#define User1_TurnMinDeg        3
+#define User1_TurnSlope         70
 
 #define User2_Callsign          "CD2RXU-8"
 #define User2_Symbol            "b"         // Bicycle
@@ -27,7 +27,7 @@
 #define User2_FastSpeed         40
 #define User2_MinDistTx         70
 #define User2_MinDeltaBcn       12
-#define User2_TurnMin           12
+#define User2_TurnMinDeg        15
 #define User2_TurnSlope         70
 
 #define User3_Callsign          "CD2RXU-9"
@@ -37,12 +37,8 @@
 #define User3_FastRate          60
 #define User3_FastSpeed         70
 #define User3_MinDistTx         100
-#define User3_MinDeltaBcn       10
-#define User3_TurnMin           15
+#define User3_MinDeltaBcn       8
+#define User3_TurnMinDeg        12
 #define User3_TurnSlope         80
-
-
-
-
 
 #endif
