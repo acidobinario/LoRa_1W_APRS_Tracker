@@ -8,7 +8,7 @@
 #define SendComment             true        // "true" adds comment to the APRS packet/message
 #define APRS_COMMENT            "Lora Tracker 1W"   // To send this comment --> SendComment = true (edit the comment as you like)
 
-#define User1_Callsign          "CD2RXU-7"
+#define User1_Callsign          "CD2RXU-7"  // This is my Callsign , so go on and change it to yours!!!
 #define User1_Symbol            "["         // Runner
 #define User1_SlowRate          120         // seg
 #define User1_SlowSpeed         3           // km/h
@@ -19,7 +19,7 @@
 #define User1_TurnMinDeg        3           // degrees
 #define User1_TurnSlope         40          // constant
 
-#define User2_Callsign          "CD2RXU-8"
+#define User2_Callsign          "CD2RXU-8"  // This is my Callsign , so go on and change it to yours!!!
 #define User2_Symbol            "b"         // Bicycle
 #define User2_SlowRate          120
 #define User2_SlowSpeed         5
@@ -30,7 +30,7 @@
 #define User2_TurnMinDeg        12
 #define User2_TurnSlope         60
 
-#define User3_Callsign          "CD2RXU-9"
+#define User3_Callsign          "CD2RXU-9"  // This is my Callsign , so go on and change it to yours!!!
 #define User3_Symbol            ">"         // Car
 #define User3_SlowRate          120
 #define User3_SlowSpeed         10
