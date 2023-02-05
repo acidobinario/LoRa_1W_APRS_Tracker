@@ -11,7 +11,7 @@ https://github.com/richonguzman/LoRa_1W_APRS_Tracker
 #include "lora_config.h"
 #include "beacon_config.h"
 
-#define VERSION "2023.01.29-1"		// BETA!!!
+#define VERSION "V0.1.1"	//2023.02.02 - BETA!!!
 
 SX1268				radio = new Module(NSS, DIO1, NRST, BUSY);
 HardwareSerial		neo6m_gps(1);

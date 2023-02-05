@@ -36,6 +36,6 @@ RXD                 17
 
 #define LED_BUILTIN 2       // Blue Led ESP32 Pin
 
-#define BUTTON1_PIN 15      // Forced Beacon Tx (Switch pin1 to pin 15 , Swith pin2 to 220 ohms resistor to GND)
+#define BUTTON1_PIN 15      // Forced Beacon Tx (Switch-pin1 to pin 15 , Switch-pin2 to 220 ohms resistor to GND)
 
 #endif

@@ -2,7 +2,7 @@
 #define BEACON_CONFIG_H_
 
 #define FirstUser               1           // Select the First User at Tracker Start Up (Example: 1 means User1)
-#define AprsPath                "AP"        // APRS Destination (could be also "WIDE1-1")
+#define AprsPath                "APLT00"    // APRS Destination (could be also "WIDE1-1" or even just "AP")
 #define AprsOverlay             "/"
 #define SendAltitude            true        // "true" adds Altitude to the APRS packet/message, "false" add Course+Speed
 #define SendComment             true        // "true" adds comment to the APRS packet/message
