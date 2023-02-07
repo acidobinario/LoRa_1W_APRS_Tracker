@@ -1,0 +1,46 @@
+{
+	"beacons": [
+		{
+			"callsign": "CD2RXU-7",
+			"symbol": "[",
+			"path": "APLT00",
+			"overlay": "/",
+			"slow_rate": 120,
+			"slow_speed": 3,
+			"fast_rate": 60,
+			"fast_speed": 15,
+			"min_tx_dist": 3,
+			"min_delta_bcn": 20,
+			"turn_min_deg": 3,
+			"turn_slope": 40
+		},
+		{
+			"callsign": "CD2RXU-8",
+			"symbol": "b",
+			"path": "APLT00",
+			"overlay": "/",
+			"slow_rate": 120,
+			"slow_speed": 5,
+			"fast_rate": 60,
+			"fast_speed": 40,
+			"min_tx_dist": 100,
+			"min_delta_bcn": 12,
+			"turn_min_deg": 12,
+			"turn_slope": 60
+		},
+		{
+			"callsign": "CD2RXU-9",
+			"symbol": ">",
+			"path": "APLT00",
+			"overlay": "/",
+			"slow_rate": 120,
+			"slow_speed": 10,
+			"fast_rate": 60,
+			"fast_speed": 70,
+			"min_tx_dist": 100,
+			"min_delta_bcn": 12,
+			"turn_min_deg": 10,
+			"turn_slope": 80
+		}
+	]
+}
